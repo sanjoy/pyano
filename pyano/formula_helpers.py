@@ -142,7 +142,7 @@ def _generate_forall_helpers():
         >>> print(forallx(Eq(Zero(), Zero())))
         (forall x. (0 = 0))
         >>> print(forallde(Eq(Zero(), Zero())))
-        (forall d. (forall e. (0 = 0)))
+        (forall d, e. (0 = 0))
 
         It also generates forallxyz and forallabc.
 

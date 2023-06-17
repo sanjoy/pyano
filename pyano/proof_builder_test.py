@@ -5,9 +5,7 @@ def test_forallxy_split():
     v = get_cached_vars()
     builder = ProofBuilder()
     builder.forall_split("med", builder.prove_eq_is_symmetric())
-    builder.assert_proved(
-        "(forall x. (forall y. (x = y))) => (forall x. (forall y. (y = x)))"
-    )
+    builder.assert_proved("(forall x, y. (x = y)) => (forall x, y. (y = x))")
     assert_proof_is_valid(builder.proof)
 
 
@@ -16,7 +14,7 @@ def test_forallxyz_split():
     builder = ProofBuilder()
     builder.forall_split("med", builder.prove_eq_is_transitive())
     builder.assert_proved(
-        "(forall x. (forall y. (forall z. (x = y)))) => (forall x. (forall y. (forall z. (y = z) => (x = z))))"
+        "(forall x, y, z. (x = y)) => (forall x, y, z. (y = z) => (x = z))"
     )
     assert_proof_is_valid(builder.proof)
 
@@ -24,7 +22,7 @@ def test_forallxyz_split():
 def test_prove_eq_is_symmetric():
     builder = ProofBuilder()
     builder.prove_eq_is_symmetric()
-    builder.assert_proved("(forall x. (forall y. (x = y) => (y = x)))")
+    builder.assert_proved("(forall x, y. (x = y) => (y = x))")
     assert_proof_is_valid(builder.proof)
 
 
@@ -35,7 +33,7 @@ def test_extract_and_prove_inner_consequent():
     builder.p(example)
     builder.p(foralld(Eq(v.d, v.d)))
     builder.forall_split("high", example)
-    builder.assert_proved("(forall d. (forall f. (d = d)))")
+    builder.assert_proved("(forall d, f. (d = d))")
     assert_proof_is_valid(builder.proof)
 
 
@@ -52,9 +50,7 @@ def test_flip_equality():
 def test_prove_eq_is_transitive():
     builder = ProofBuilder()
     builder.prove_eq_is_transitive()
-    builder.assert_proved(
-        "(forall x. (forall y. (forall z. (x = y) => (y = z) => (x = z))))"
-    )
+    builder.assert_proved("(forall x, y, z. (x = y) => (y = z) => (x = z))")
     assert_proof_is_valid(builder.proof)
 
 
@@ -76,7 +72,7 @@ def test_prove_values_transitively_equal():
 def test_flip_xy_order_in_forall():
     builder = ProofBuilder()
     builder.flip_xy_order_in_forall(builder.peano_axiom_x_plus_succ_y())
-    builder.assert_proved("(forall a. (forall b. ((b + S(a)) = S((b + a)))))")
+    builder.assert_proved("(forall a, b. ((b + S(a)) = S((b + a))))")
     assert_proof_is_valid(builder.proof)
 
 

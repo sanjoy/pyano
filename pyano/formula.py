@@ -130,6 +130,7 @@ class Var(Nat):
 
     def __init__(self, name):
         _assert_type(name, str)
+        assert "," not in name
 
         self._name = name
 
@@ -262,7 +263,12 @@ class ForAll(Pred):
         self._hash = self._compute_hash()
 
     def __str__(self):
-        return f"(forall {self.var}. {self.body})"
+        varlist = []
+        i = self
+        while isinstance(i, ForAll):
+            varlist.append(i.var)
+            i = i.body
+        return f"(forall {', '.join(varlist)}. {i})"
 
     def _compute_hash(self):
         return hash((ForAll, self.body))

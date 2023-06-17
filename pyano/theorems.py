@@ -151,7 +151,7 @@ def prove_succ_commutes_with_addition(b):
     p(forallmn(ImpliesN(B, A, C)))
     ind = b.forall_split()
     b.assert_proved(
-        "(forall m. (forall n. ((n + S(m)) = (S(n) + m)) => (S((n + S(m))) = S((S(n) + m)))))"
+        "(forall m, n. ((n + S(m)) = (S(n) + m)) => (S((n + S(m))) = S((S(n) + m))))"
     )
 
     b.peano_axiom_x_plus_succ_y()
@@ -159,7 +159,7 @@ def prove_succ_commutes_with_addition(b):
     b.subst_forall_with_expr(b.last_formula, Succ)
     b.flip_equality()
 
-    b.assert_proved("(forall t. (forall b. (S((b + S(t))) = (b + S(S(t))))))")
+    b.assert_proved("(forall t, b. (S((b + S(t))) = (b + S(S(t)))))")
 
     p(
         forallmn(
@@ -178,7 +178,7 @@ def prove_succ_commutes_with_addition(b):
     ind = b.forall_split()
 
     b.assert_proved(
-        "(forall m. (forall n. ((n + S(m)) = (S(n) + m)) => ((n + S(S(m))) = S((S(n) + m)))))"
+        "(forall m, n. ((n + S(m)) = (S(n) + m)) => ((n + S(S(m))) = S((S(n) + m))))"
     )
 
     b.peano_axiom_x_plus_succ_y()
@@ -203,7 +203,7 @@ def prove_succ_commutes_with_addition(b):
     ind = b.forall_split()
 
     b.assert_proved(
-        "(forall m. (forall n. ((n + S(m)) = (S(n) + m)) => ((n + S(S(m))) = (S(n) + S(m)))))"
+        "(forall m, n. ((n + S(m)) = (S(n) + m)) => ((n + S(S(m))) = (S(n) + S(m))))"
     )
 
     p(
@@ -231,7 +231,7 @@ def prove_succ_commutes_with_addition(b):
     p(forallxy(Eq(Add(v.y, v.sx), Add(v.sy, v.x))))
     b.flip_xy_order_in_forall()
 
-    b.assert_proved("(forall a. (forall b. ((a + S(b)) = (S(a) + b))))")
+    b.assert_proved("(forall a, b. ((a + S(b)) = (S(a) + b)))")
 
 
 def prove_addition_is_commutative(b):
@@ -274,9 +274,7 @@ def prove_addition_is_commutative(b):
     b.forall_split()
     p(forallmn(ImpliesN(B, A, C)))
     ind = b.forall_split()
-    b.assert_proved(
-        "(forall m. (forall n. ((n + m) = (m + n)) => (S((n + m)) = S((m + n)))))"
-    )
+    b.assert_proved("(forall m, n. ((n + m) = (m + n)) => (S((n + m)) = S((m + n))))")
 
     b.peano_axiom_x_plus_succ_y()
     b.flip_xy_order_in_forall()

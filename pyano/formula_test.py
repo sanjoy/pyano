@@ -12,7 +12,7 @@ def test_serialization_1():
         "x",
         ForAll("y", Eq(Add(Var("x"), Succ(Var("y"))), Succ(Add(Var("x"), Var("y"))))),
     )
-    assert str(addition_axiom) == "(forall x. (forall y. ((x + S(y)) = S((x + y)))))"
+    assert str(addition_axiom) == "(forall x, y. ((x + S(y)) = S((x + y))))"
 
 
 def test_serialization_2():
@@ -238,7 +238,7 @@ def test_canonicalize_bound_vars_0():
     free_vars = set()
     uniqued = canonicalize_bound_vars(addition_axiom, free_vars)
 
-    assert str(uniqued) == "(forall $0. (forall $1. (($0 + S($1)) = S(($0 + $1)))))"
+    assert str(uniqued) == "(forall $0, $1. (($0 + S($1)) = S(($0 + $1))))"
     assert len(free_vars) == 0
 
 
@@ -251,5 +251,5 @@ def test_canonicalize_bound_vars_1():
     free_vars = set()
     uniqued = canonicalize_bound_vars(open_sentence, free_vars)
 
-    assert str(uniqued) == "(forall $0. (forall $1. (($0 + S(z)) = S(($0 + $1)))))"
+    assert str(uniqued) == "(forall $0, $1. (($0 + S(z)) = S(($0 + $1))))"
     assert [x.name for x in free_vars] == ["z"]

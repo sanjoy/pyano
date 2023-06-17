@@ -16,11 +16,11 @@ def test_prove_succ_commutes_with_addition():
     builder = ProofBuilder()
     prove_succ_commutes_with_addition(builder)
     assert_proof_is_valid(builder.proof)
-    builder.assert_proved("(forall a. (forall b. ((a + S(b)) = (S(a) + b))))")
+    builder.assert_proved("(forall a, b. ((a + S(b)) = (S(a) + b)))")
 
 
 def test_prove_addition_is_commutative():
     builder = ProofBuilder()
     prove_addition_is_commutative(builder)
     assert_proof_is_valid(builder.proof)
-    builder.assert_proved("(forall a. (forall b. ((a + b) = (b + a))))")
+    builder.assert_proved("(forall a, b. ((a + b) = (b + a)))")
