@@ -82,3 +82,14 @@ def test_apply_fn_on_eq():
     builder.apply_fn_on_eq(Succ)
     builder.assert_proved("(forall x. (S((x + 0)) = S(x)))")
     assert_proof_is_valid(builder.proof)
+
+
+def test_simplify_proof():
+    builder = ProofBuilder()
+    builder.peano_axiom_x_plus_zero()
+    builder.peano_axiom_x_plus_zero()
+    builder.assert_proved("(forall x. ((x + 0) = x))")
+    assert len(builder.proof) == 2
+    saved = builder.simplify_proof()
+    assert saved == 1
+    assert len(builder.proof) == 1

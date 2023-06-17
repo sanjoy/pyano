@@ -16,6 +16,21 @@ class ProofBuilder:
         self._proof.append(formula)
         return formula
 
+    def simplify_proof(self):
+        """Removes redundant formulae from the proof.  Returns the number of such formulae
+        removed.
+
+        """
+        formulae = set()
+        new_proof = []
+        for p in self.proof:
+            if p not in formulae:
+                new_proof.append(p)
+                formulae.add(p)
+        formulae_removed = len(self._proof) - len(new_proof)
+        self._proof = new_proof
+        return formulae_removed
+
     @property
     def proof(self):
         return self._proof
