@@ -84,6 +84,24 @@ def test_apply_fn_on_eq():
     assert_proof_is_valid(builder.proof)
 
 
+def test_printing_proof():
+    builder = ProofBuilder()
+    builder.peano_axiom_x_plus_zero()
+    builder.apply_fn_on_eq(Succ)
+    assert_proof_is_valid(builder.proof)
+    proof_str = """
+0. (forall x. ((x + 0) = x))
+1. (forall x. (S((x + 0)) = S((x + 0))))
+2. (forall x. ((x + 0) = x) => (S((x + 0)) = S((x + 0))) => (S((x + 0)) = S(x)))
+3. (forall x. ((x + 0) = x) => (S((x + 0)) = S((x + 0))) => (S((x + 0)) = S(x))) => (forall x. ((x + 0) = x)) => (forall x. (S((x + 0)) = S((x + 0))) => (S((x + 0)) = S(x)))
+4. (forall x. ((x + 0) = x)) => (forall x. (S((x + 0)) = S((x + 0))) => (S((x + 0)) = S(x)))
+5. (forall x. (S((x + 0)) = S((x + 0))) => (S((x + 0)) = S(x)))
+6. (forall x. (S((x + 0)) = S((x + 0))) => (S((x + 0)) = S(x))) => (forall x. (S((x + 0)) = S((x + 0)))) => (forall x. (S((x + 0)) = S(x)))
+7. (forall x. (S((x + 0)) = S((x + 0)))) => (forall x. (S((x + 0)) = S(x)))
+8. (forall x. (S((x + 0)) = S(x)))"""
+    assert str(builder) == proof_str[1:]
+
+
 def test_simplify_proof():
     builder = ProofBuilder()
     builder.peano_axiom_x_plus_zero()
