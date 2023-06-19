@@ -1,7 +1,6 @@
 """Core data structures to represent first order formulas."""
 
-import itertools
-import functools
+import string
 
 
 class Formula:
@@ -443,6 +442,8 @@ def get_name_generator(fs):
         names = [x.name for x in subformulae if isinstance(x, Var)]
         all_names.update(names)
 
+    generic_names = sorted(list(set(string.ascii_lowercase) - all_names))
+
     max_suffix = -1
     for n in all_names:
         if n.startswith("$") and n[1:].isdigit():
@@ -450,6 +451,10 @@ def get_name_generator(fs):
 
     def generate():
         nonlocal max_suffix
+        nonlocal generic_names
+        if len(generic_names) != 0:
+            return generic_names.pop()
+
         max_suffix = max_suffix + 1
         return f"${max_suffix}"
 
