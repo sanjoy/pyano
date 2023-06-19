@@ -357,3 +357,43 @@ def prove_addition_is_commutative(b):
     p(gen_induction_axiom("m", foralln(Eq(Add(v.n, v.m), Add(v.m, v.n)))))
     p(forallmn(Eq(Add(v.n, v.m), Add(v.m, v.n))))
     b.flip_xy_order_in_forall()
+
+
+def prove_one_less_than_two(b):
+    p = b.p
+    v = get_cached_vars()
+
+    theorem = LessThan(v.i1, v.i2)
+
+    two_eq_two = Eq(v.i2, v.i2)
+
+    p(forallx(Eq(v.x, v.x)))
+    b.immediately_implies(two_eq_two)
+
+    p(ImpliesN(two_eq_two, Implies(theorem.x, Not(two_eq_two)), theorem))
+    p(ImpliesN(Implies(theorem.x, Not(two_eq_two)), theorem))
+    p(Implies(theorem.x, Not(Eq(Add(v.i1, v.i1), v.i2))))
+
+    # Now all we need to do is show 1+1=2 and we'll have the proof.
+
+    b.immediately_implies(
+        b.peano_axiom_x_plus_succ_y(),
+        forallx(Eq(Add(v.i1, v.sx), Succ(Add(v.i1, v.x)))),
+    )
+    one_plus_1_eq_succ_1_plus_0 = b.immediately_implies(
+        b.last_formula, Eq(Add(v.i1, v.i1), Succ(Add(v.i1, v.Z)))
+    )
+
+    one_plus_0_eq_1 = b.immediately_implies(
+        b.peano_axiom_x_plus_zero(), Eq(Add(v.i1, v.Z), v.i1)
+    )
+    one_plus_1_eq_2 = b.immediately_implies(
+        one_plus_0_eq_1, one_plus_1_eq_succ_1_plus_0, Eq(Add(v.i1, v.i1), v.i2)
+    )
+
+    b.immediately_implies(
+        one_plus_1_eq_2,
+        Implies(theorem.x, Not(Eq(Add(v.i1, v.i1), v.i2))),
+        Implies(theorem.x, Not(Eq(v.i2, v.i2))),
+    )
+    p(theorem)

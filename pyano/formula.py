@@ -213,6 +213,8 @@ class Not(Pred):
         self._hash = self._compute_hash()
 
     def __str__(self):
+        if isinstance(self.x, ForAll) and isinstance(self.x.body, Not):
+            return f"(exists {self.x.var}. {self.x.body.x})"
         return f"!{self.x}"
 
     def _compute_hash(self):
