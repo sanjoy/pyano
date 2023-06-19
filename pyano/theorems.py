@@ -2,8 +2,10 @@ from proof_checker import *
 from formula import *
 from axioms import *
 from formula_helpers import *
+from proof_builder import *
 
 import inspect
+import os
 
 
 def prove_adding_zero_commutes(b):
@@ -397,3 +399,27 @@ def prove_one_less_than_two(b):
         Implies(theorem.x, Not(Eq(v.i2, v.i2))),
     )
     p(theorem)
+
+
+def _export_proofs(root_dir):
+    if not os.path.exists(root_dir):
+        os.makedirs(root_dir)
+
+    for func_name, func in globals().items():
+        if func_name.startswith("prove_"):
+            proof_name = func_name[len("prove_") :]
+            with open(f"{root_dir}/{proof_name}.proof", "w") as f:
+                builder = ProofBuilder()
+                func(builder)
+                builder.simplify_proof()
+                assert_proof_is_valid(builder.proof)
+                f.write(str(builder))
+            print(f"Wrote {root_dir}/{proof_name}.proof")
+
+
+def main():
+    _export_proofs(f"{os.getcwd()}/proved_theorems")
+
+
+if __name__ == "__main__":
+    main()
