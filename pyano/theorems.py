@@ -411,7 +411,10 @@ def _export_proofs(root_dir):
             with open(f"{root_dir}/{proof_name}.proof", "w") as f:
                 builder = ProofBuilder()
                 func(builder)
-                builder.simplify_proof()
+                formulae_removed = builder.simplify_proof()
+                print(
+                    f"Optimizations removed {formulae_removed} formulae from {proof_name}."
+                )
                 assert_proof_is_valid(builder.proof)
                 f.write(str(builder))
             print(f"Wrote {root_dir}/{proof_name}.proof")
