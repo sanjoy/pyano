@@ -28,6 +28,11 @@ python3 -m venv venv && \
 Running `pytest` in the `pyano` directory will execute all of Pyano's unit
 tests.
 
+If you learn by doing and enjoy throwing yourself in the deep end, try extending
+`prove_one_less_than_two` in `theorems.py` (which proves `1` is less than `2`)
+to prove `1` is less than `3`.  See `theorems_test.py` on how to formally verify
+the proof.
+
 ## Code structure
 
 * `formula.py` contains the data structures to represent first-order formulae
@@ -38,7 +43,9 @@ tests.
   formal proof is valid.
 * `proof_builder.py` defines `ProofBuilder` which is a (stateful) builder class
   that makes writing proofs easier.
-* `theorems.py` proves a couple of theorems.
+* `theorems.py` proves a couple of theorems.  The full proofs for these theorems
+  are checked-in at `pyano/proved_theorems`, and running `theorems.py`
+  regenerates these.
 
 ## What is a correct proof?
 
