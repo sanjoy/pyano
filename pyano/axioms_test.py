@@ -18,21 +18,21 @@ def test_is_induction_axiom_1():
 
 def test_is_induction_axiom_2():
     two = Succ(Succ(Zero()))
-    p = Or(LessThan(Var("x"), two), LessThan(two, Var("x")))
+    p = Or(LessThanOrEq(Var("x"), two), LessThanOrEq(two, Var("x")))
 
     induction = gen_induction_axiom("x", p)
     assert is_induction_axiom(induction)
 
 
 def test_is_induction_axiom_3():
-    p = Or(LessThan(Var("x"), Var("i")), LessThan(Var("i"), Var("x")))
+    p = Or(LessThanOrEq(Var("x"), Var("i")), LessThanOrEq(Var("i"), Var("x")))
 
     induction = ForAll("i", gen_induction_axiom("x", p))
     assert is_induction_axiom(induction)
 
 
 def test_is_induction_axiom_4():
-    p = Or(LessThan(Var("x"), Var("i")), LessThan(Var("i"), Var("x")))
+    p = Or(LessThanOrEq(Var("x"), Var("i")), LessThanOrEq(Var("i"), Var("x")))
 
     induction = gen_induction_axiom("x", p)
     assert not is_induction_axiom(induction)
@@ -40,8 +40,8 @@ def test_is_induction_axiom_4():
 
 def test_is_induction_axiom_3():
     two = Succ(Succ(Zero()))
-    p1 = Or(LessThan(Var("x"), two), LessThan(two, Var("x")))
-    p2 = Or(LessThan(two, Var("x")), LessThan(Var("x"), two))
+    p1 = Or(LessThanOrEq(Var("x"), two), LessThanOrEq(two, Var("x")))
+    p2 = Or(LessThanOrEq(two, Var("x")), LessThanOrEq(Var("x"), two))
 
     induction = Implies(
         And(

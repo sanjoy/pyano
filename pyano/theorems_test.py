@@ -29,4 +29,4 @@ def test_prove_addition_is_commutative():
 
 
 def test_prove_one_less_than_two():
-    _check_proof(prove_one_less_than_two, "(exists z. ((S(0) + z) = S(S(0))))")
+    _check_proof(prove_one_less_than_or_eq_two, "(exists z. ((S(0) + z) = S(S(0))))")

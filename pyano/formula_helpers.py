@@ -7,7 +7,7 @@ def Exists(var, predicate_with_free_var):
     return Not(ForAll(var, Not(predicate_with_free_var)))
 
 
-def LessThan(x, y):
+def LessThanOrEq(x, y):
     varname = get_name_generator([x, y])()
     return Exists(varname, Eq(Add(x, Var(varname)), y))
 

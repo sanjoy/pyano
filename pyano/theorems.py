@@ -361,11 +361,11 @@ def prove_addition_is_commutative(b):
     b.flip_xy_order_in_forall()
 
 
-def prove_one_less_than_two(b):
+def prove_one_less_than_or_eq_two(b):
     p = b.p
     v = get_cached_vars()
 
-    theorem = LessThan(v.i1, v.i2)
+    theorem = LessThanOrEq(v.i1, v.i2)
 
     two_eq_two = Eq(v.i2, v.i2)
 
