@@ -401,23 +401,46 @@ def prove_one_less_than_or_eq_two(b):
     p(theorem)
 
 
+def _iterate_proofs(callback):
+    for func_name, func in globals().items():
+        if not func_name.startswith("prove_"):
+            continue
+        theorem_name = func_name[len("prove_") :]
+        builder = ProofBuilder()
+        func(builder)
+        formulae_removed = builder.simplify_proof()
+        print(f"Optimizations removed {formulae_removed} formulae from {theorem_name}.")
+        assert_proof_is_valid(builder.proof)
+        callback(str(builder), theorem_name)
+
+
 def _export_proofs(root_dir):
     if not os.path.exists(root_dir):
         os.makedirs(root_dir)
 
-    for func_name, func in globals().items():
-        if func_name.startswith("prove_"):
-            proof_name = func_name[len("prove_") :]
-            with open(f"{root_dir}/{proof_name}.proof", "w") as f:
-                builder = ProofBuilder()
-                func(builder)
-                formulae_removed = builder.simplify_proof()
-                print(
-                    f"Optimizations removed {formulae_removed} formulae from {proof_name}."
-                )
-                assert_proof_is_valid(builder.proof)
-                f.write(str(builder))
-            print(f"Wrote {root_dir}/{proof_name}.proof")
+    def write_proof_to_file(proof, theorem_name):
+        with open(f"{root_dir}/{theorem_name}.proof", "w") as f:
+            f.write(proof)
+            print(f"Wrote {root_dir}/{theorem_name}.proof")
+
+    _iterate_proofs(write_proof_to_file)
+
+
+def assert_exported_proofs_match(root_dir):
+    theorem_files_checked = set()
+
+    def assert_exported_proof_matches(proof, theorem_name):
+        with open(f"{root_dir}/{theorem_name}.proof", "r") as f:
+            assert "".join(f.readlines()) == proof
+            theorem_files_checked.add(f"{theorem_name}.proof")
+
+    _iterate_proofs(assert_exported_proof_matches)
+
+    theorem_files = os.listdir(root_dir)
+    for theorem_file in theorem_files:
+        assert (
+            theorem_file in theorem_files_checked
+        ), f"Theorem {theorem_file} present but not checked"
 
 
 def main():

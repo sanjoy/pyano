@@ -5,6 +5,9 @@ from formula_helpers import *
 from proof_builder import *
 
 
+import subprocess
+
+
 def _check_proof(fn, theorem):
     builder = ProofBuilder()
     fn(builder)
@@ -12,6 +15,11 @@ def _check_proof(fn, theorem):
     builder.simplify_proof()
     assert_proof_is_valid(builder.proof)
     builder.assert_proved(theorem)
+
+
+def _get_git_root_dir():
+    git_cmd = ["git", "rev-parse", "--show-toplevel"]
+    return subprocess.run(git_cmd, capture_output=True, text=True).stdout.strip()
 
 
 def test_prove_adding_zero_commutes():
@@ -30,3 +38,7 @@ def test_prove_addition_is_commutative():
 
 def test_prove_one_less_than_two():
     _check_proof(prove_one_less_than_or_eq_two, "(exists z. ((S(0) + z) = S(S(0))))")
+
+
+def test_exported_proofs():
+    assert_exported_proofs_match(f"{_get_git_root_dir()}/pyano/proved_theorems")
