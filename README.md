@@ -29,9 +29,9 @@ Running `pytest` in the `pyano` directory will execute all of Pyano's unit
 tests.
 
 If you learn by doing and enjoy throwing yourself in the deep end, try extending
-`prove_one_less_than_two` in `theorems.py` (which proves `1` is less than `2`)
-to prove `1` is less than `3`.  See `theorems_test.py` on how to formally verify
-the proof.
+`prove_one_less_than_or_eq_two` in `theorems.py` (which proves `1` is less than
+or equal to `2`) to prove that `1` is less than or equal to `3`.  See
+`theorems_test.py` on how to formally verify the proof.
 
 ## Code structure
 

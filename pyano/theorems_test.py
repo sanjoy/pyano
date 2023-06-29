@@ -36,7 +36,7 @@ def test_prove_addition_is_commutative():
     _check_proof(prove_addition_is_commutative, "(forall a, b. ((a + b) = (b + a)))")
 
 
-def test_prove_one_less_than_two():
+def test_prove_one_less_than_or_eq_two():
     _check_proof(prove_one_less_than_or_eq_two, "(exists z. ((S(0) + z) = S(S(0))))")
 
 
