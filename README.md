@@ -52,7 +52,7 @@ the proof.
 A formally correct proof in first-order logic is a sequence of formulae where
 each statement is either an axiom (and thus assumed to be true) or follows from
 two previous axioms through [modus
-pones](https://en.wikipedia.org/wiki/Modus_ponens).  There are equivalent
+ponens](https://en.wikipedia.org/wiki/Modus_ponens).  There are equivalent
 formulations, but this is the definition used in Pyano.
 
 So the following is a valid proof that shows 0=0.  The text in square brackets
@@ -60,7 +60,7 @@ are comments which aren't part of the formal proof.
 
 1. `forall x. x = x`.  [This is an axiom.]
 2. `forall x. x = x => 0=0`  [This is an axiom.]
-3. `0=0` [Follows from modus pones in 1 and 2.]
+3. `0=0` [Follows from modus ponens in 1 and 2.]
 
 As a counterexample, the following proof is incorrect:
 
@@ -77,15 +77,15 @@ for i in range(0, len(proof)):
   if is_axiom(proof[i]):
     continue
 
-  modus_pones = False
+  modus_ponens = False
   for j in range(0, i):
     for k in range(0, i):
       if (proof[j] is P=>Q and
           proof[k] is P and
           proof[i] is Q)
-        modus_pones = True
+        modus_ponens = True
 
-  if not modus_pones:
+  if not modus_ponens:
     fail_verification()
 ```
 
