@@ -163,8 +163,7 @@ def is_reflexivity_axiom(f):
 
 
 def _is_reflexivity_axiom_impl(f):
-    varname = get_name_generator(f)()
-    return match_template(Eq(Var(varname), Var(varname)), f, [varname])
+    return f == ForAll("x", Eq(Var("x"), Var("x")))
 
 
 def is_subst_axiom(f):

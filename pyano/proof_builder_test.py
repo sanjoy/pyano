@@ -84,6 +84,27 @@ def test_apply_fn_on_eq():
     assert_proof_is_valid(builder.proof)
 
 
+def test_prove_expr_eq_to_itself_0():
+    builder = ProofBuilder()
+    builder.prove_expr_eq_to_itself(Add(Var("x"), Var("x")), ["x"])
+    builder.assert_proved("(forall x. ((x + x) = (x + x)))")
+    assert_proof_is_valid(builder.proof)
+
+
+def test_prove_expr_eq_to_itself_1():
+    builder = ProofBuilder()
+    builder.prove_expr_eq_to_itself(Add(Var("x"), Var("y")), ["x", "y"])
+    builder.assert_proved("(forall x, y. ((x + y) = (x + y)))")
+    assert_proof_is_valid(builder.proof)
+
+
+def test_prove_expr_eq_to_itself_2():
+    builder = ProofBuilder()
+    builder.prove_expr_eq_to_itself(Add(Var("x"), Var("y")), ["y", "x"])
+    builder.assert_proved("(forall y, x. ((x + y) = (x + y)))")
+    assert_proof_is_valid(builder.proof)
+
+
 def test_printing_proof():
     builder = ProofBuilder()
     builder.peano_axiom_x_plus_zero()
@@ -91,14 +112,19 @@ def test_printing_proof():
     assert_proof_is_valid(builder.proof)
     proof_str = """
 0. (forall x. ((x + 0) = x))
-1. (forall x. (S((x + 0)) = S((x + 0))))
-2. (forall x. ((x + 0) = x) => (S((x + 0)) = S((x + 0))) => (S((x + 0)) = S(x)))
-3. (forall x. ((x + 0) = x) => (S((x + 0)) = S((x + 0))) => (S((x + 0)) = S(x))) => (forall x. ((x + 0) = x)) => (forall x. (S((x + 0)) = S((x + 0))) => (S((x + 0)) = S(x)))
-4. (forall x. ((x + 0) = x)) => (forall x. (S((x + 0)) = S((x + 0))) => (S((x + 0)) = S(x)))
-5. (forall x. (S((x + 0)) = S((x + 0))) => (S((x + 0)) = S(x)))
-6. (forall x. (S((x + 0)) = S((x + 0))) => (S((x + 0)) = S(x))) => (forall x. (S((x + 0)) = S((x + 0)))) => (forall x. (S((x + 0)) = S(x)))
-7. (forall x. (S((x + 0)) = S((x + 0)))) => (forall x. (S((x + 0)) = S(x)))
-8. (forall x. (S((x + 0)) = S(x)))"""
+1. (forall x, p. (p = p))
+2. (forall x. (forall p. (p = p)) => (S((x + 0)) = S((x + 0))))
+3. (forall x. (forall p. (p = p)) => (S((x + 0)) = S((x + 0)))) => (forall x, p. (p = p)) => (forall x. (S((x + 0)) = S((x + 0))))
+4. (forall x, p. (p = p)) => (forall x. (S((x + 0)) = S((x + 0))))
+5. (forall x. (S((x + 0)) = S((x + 0))))
+6. (forall x. ((x + 0) = x) => (S((x + 0)) = S((x + 0))) => (S((x + 0)) = S(x)))
+7. (forall x. ((x + 0) = x) => (S((x + 0)) = S((x + 0))) => (S((x + 0)) = S(x))) => (forall x. ((x + 0) = x)) => (forall x. (S((x + 0)) = S((x + 0))) => (S((x + 0)) = S(x)))
+8. (forall x. ((x + 0) = x)) => (forall x. (S((x + 0)) = S((x + 0))) => (S((x + 0)) = S(x)))
+9. (forall x. (S((x + 0)) = S((x + 0))) => (S((x + 0)) = S(x)))
+10. (forall x. (S((x + 0)) = S((x + 0))) => (S((x + 0)) = S(x))) => (forall x. (S((x + 0)) = S((x + 0)))) => (forall x. (S((x + 0)) = S(x)))
+11. (forall x. (S((x + 0)) = S((x + 0)))) => (forall x. (S((x + 0)) = S(x)))
+12. (forall x. (S((x + 0)) = S(x)))"""
+    print(str(builder))
     assert str(builder) == proof_str[1:]
 
 

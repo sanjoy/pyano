@@ -178,26 +178,17 @@ def test_is_forall_split_1():
 
 
 def test_is_reflexivity_axiom_0():
-    axiom = Eq(Zero(), Zero())
+    axiom = ForAll("x", Eq(Var("x"), Var("x")))
     assert is_reflexivity_axiom(axiom)
 
 
 def test_is_reflexivity_axiom_1():
-    axiom = Eq(Zero(), Succ(Zero()))
-    assert not is_reflexivity_axiom(axiom)
-
-
-def test_is_reflexivity_axiom_2():
-    axiom = ForAll(
-        "x", ForAll("y", Eq(Add(Var("x"), Var("y")), Add(Var("x"), Var("y"))))
-    )
+    axiom = ForAll("y", ForAll("x", Eq(Var("x"), Var("x"))))
     assert is_reflexivity_axiom(axiom)
 
 
-def test_is_reflexivity_axiom_3():
-    axiom = ForAll(
-        "x", ForAll("y", Eq(Add(Var("x"), Var("y")), Add(Var("y"), Var("x"))))
-    )
+def test_is_reflexivity_axiom_2():
+    axiom = ForAll("x", ForAll("y", Eq(Var("x"), Var("x"))))
     assert not is_reflexivity_axiom(axiom)
 
 

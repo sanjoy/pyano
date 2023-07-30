@@ -146,7 +146,7 @@ def prove_succ_commutes_with_addition(b):
     B = Eq(Succ(Add(v.n, v.sm)), Succ(Add(v.n, v.sm)))
     C = Eq(Succ(Add(v.n, v.sm)), Succ(Add(v.sn, v.m)))
 
-    p(forallmn(B))
+    b.prove_expr_eq_to_itself(B.a, ["m", "n"])
     p(forallmn(ImpliesN(A, B, C)))
     p(forallmn(Implies(ImpliesN(A, B, C), ImpliesN(B, A, C))))
     b.forall_split()
@@ -270,7 +270,7 @@ def prove_addition_is_commutative(b):
     B = Eq(Succ(Add(v.n, v.m)), Succ(Add(v.n, v.m)))
     C = Eq(Succ(Add(v.n, v.m)), Succ(Add(v.m, v.n)))
 
-    p(forallmn(B))
+    b.prove_expr_eq_to_itself(B.a, ["m", "n"])
     p(forallmn(ImpliesN(A, B, C)))
     p(forallmn(Implies(ImpliesN(A, B, C), ImpliesN(B, A, C))))
     b.forall_split()

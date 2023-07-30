@@ -235,7 +235,8 @@ class ProofBuilder:
         p(forallxy(ImpliesN(X_X, X_Y, Y_X)))
 
         self.forall_split("med")
-        p(forallxy(X_X))
+        p(forallyx(X_X))
+        self.flip_xy_order_in_forall()
         return p(theorem)
 
     def immediately_implies(self, *formulae):
@@ -464,6 +465,34 @@ class ProofBuilder:
         self.forall_split("med")
         return p(_forallxy(body(vy, vx)))
 
+    def prove_expr_eq_to_itself(self, expr, free_vars):
+        """Generate a proof that `expr` is equal to itself."""
+        p = self.p
+        v = get_cached_vars()
+
+        assert set(free_vars) == get_free_vars(
+            expr
+        ), f"free_vars = {free_vars}, get_free_vars(expr) = {get_free_vars(expr)}"
+        assert len(free_vars) == 1 or len(free_vars) == 2
+        available_vars = sorted(list(set(["p", "q", "r"]) - set(free_vars)))
+
+        x = Var(available_vars[0])
+
+        def _forallx(expr):
+            return ForAll(x.name, expr)
+
+        def _forally(expr):
+            return ForAllN(free_vars, expr)
+
+        # forallyx. x=x
+        # forally. (forallx. x=x) => fn(y)=fn(y)
+        # (forallyx. x=x) => forally. fn(y)=fn(y)
+
+        x_eq_x = Eq(x, x)
+        p(_forally(_forallx(x_eq_x)))
+        p(_forally(Implies(_forallx(x_eq_x), Eq(expr, expr))))
+        self.forall_split()
+
     def apply_fn_on_eq(self, fn, eq=None):
         """Given "forall x. M(x)=N(x)" proves "forall x. F(M(x))=F(N(x))"
 
@@ -480,7 +509,7 @@ class ProofBuilder:
         def _forallx(body):
             return ForAll(eq.var, body)
 
-        p(_forallx(Eq(fn(A), fn(A))))
+        self.prove_expr_eq_to_itself(fn(A), [eq.var])
         p(_forallx(ImpliesN(eq.body, Eq(fn(A), fn(A)), Eq(fn(A), fn(B)))))
         self.forall_split()
         return self.forall_split()
