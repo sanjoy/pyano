@@ -41,8 +41,8 @@ class ProofBuilder:
     def __str__(self):
         fs = []
         for i, p in enumerate(self.proof):
-            fs.append(f"{i}. {p}")
-        return "\n".join(fs)
+            fs.append(f"{i}. {p}\n")
+        return "".join(fs)
 
     @property
     def last_formula(self):

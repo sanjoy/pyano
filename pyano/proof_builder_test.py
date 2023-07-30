@@ -123,7 +123,8 @@ def test_printing_proof():
 9. (forall x. (S((x + 0)) = S((x + 0))) => (S((x + 0)) = S(x)))
 10. (forall x. (S((x + 0)) = S((x + 0))) => (S((x + 0)) = S(x))) => (forall x. (S((x + 0)) = S((x + 0)))) => (forall x. (S((x + 0)) = S(x)))
 11. (forall x. (S((x + 0)) = S((x + 0)))) => (forall x. (S((x + 0)) = S(x)))
-12. (forall x. (S((x + 0)) = S(x)))"""
+12. (forall x. (S((x + 0)) = S(x)))
+"""
     print(str(builder))
     assert str(builder) == proof_str[1:]
 
