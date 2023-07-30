@@ -7,13 +7,16 @@ from formula_helpers import *
 class ProofBuilder:
     """`ProofBuilder` is a stateful helper for constructing formal proofs."""
 
-    def __init__(self):
+    def __init__(self, check_each_step=False):
         self._proof = []
         self._proved_eq_is_symmetric = False
         self._proved_eq_is_transitive = False
+        self._check_each_step = check_each_step
 
     def p(self, formula):
         self._proof.append(formula)
+        if self._check_each_step:
+            assert_proof_is_valid(self._proof)
         return formula
 
     def simplify_proof(self):
