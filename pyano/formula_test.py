@@ -253,3 +253,136 @@ def test_canonicalize_bound_vars_1():
 
     assert str(uniqued) == "(forall $0, $1. (($0 + S(z)) = S(($0 + $1))))"
     assert [x.name for x in free_vars] == ["z"]
+
+
+def test_mul_serialization():
+    x = Var("x")
+    y = Var("y")
+    mul_expr = Mul(x, y)
+    assert str(mul_expr) == "(x * y)"
+
+
+def test_mul_with_numbers():
+    two = Succ(Succ(Zero()))
+    three = Succ(Succ(Succ(Zero())))
+    mul_expr = Mul(two, three)
+    assert str(mul_expr) == "(S(S(0)) * S(S(S(0))))"
+
+
+def test_mul_equality():
+    x = Var("x")
+    y = Var("y")
+    mul1 = Mul(x, y)
+    mul2 = Mul(x, y)
+    assert mul1 == mul2
+
+
+def test_mul_in_formula():
+    x = Var("x")
+    y = Var("y")
+    z = Var("z")
+    formula = ForAll("x", Eq(Mul(x, y), z))
+    assert str(formula) == "(forall x. ((x * y) = z))"
+
+
+def test_complex_nested_formula():
+    x = Var("x")
+    y = Var("y")
+    z = Var("z")
+    nested = ForAll("x", 
+        ForAll("y", 
+            Implies(
+                And(Eq(x, Zero()), Eq(y, Succ(Zero()))),
+                Eq(Add(x, Mul(y, z)), z)
+            )
+        )
+    )
+    expected = "(forall x, y. ((x = 0) & (y = S(0))) => ((x + (y * z)) = z))"
+    assert str(nested) == expected
+
+
+def test_deeply_nested_implications():
+    p = Eq(Var("p"), Zero())
+    q = Eq(Var("q"), Zero())
+    r = Eq(Var("r"), Zero())
+    s = Eq(Var("s"), Zero())
+    nested_impl = Implies(p, Implies(q, Implies(r, s)))
+    assert str(nested_impl) == "(p = 0) => (q = 0) => (r = 0) => (s = 0)"
+
+
+def test_variable_shadowing():
+    inner_forall = ForAll("x", Eq(Var("x"), Zero()))
+    outer_forall = ForAll("x", And(Eq(Var("x"), Succ(Zero())), inner_forall))
+    assert str(outer_forall) == "(forall x. ((x = S(0)) & (forall x. (x = 0))))"
+
+
+def test_exists_via_not_forall_not():
+    x = Var("x")
+    exists_x = Not(ForAll("x", Not(Eq(x, Zero()))))
+    assert str(exists_x) == "(exists x. (x = 0))"
+
+
+def test_multiple_quantifiers_with_same_name():
+    formula = ForAll("x", 
+        And(
+            Eq(Var("x"), Zero()),
+            ForAll("x", Eq(Var("x"), Succ(Zero())))
+        )
+    )
+    subst = substitute_forall(formula, Succ(Succ(Zero())))
+    assert str(subst) == "((S(S(0)) = 0) & (forall x. (x = S(0))))"
+
+
+def test_get_free_vars_complex():
+    formula = ForAll("x", 
+        And(
+            Eq(Var("x"), Var("y")),
+            ForAll("z", Eq(Var("z"), Var("w")))
+        )
+    )
+    free_vars = get_free_vars(formula)
+    assert free_vars == {"y", "w"}
+
+
+def test_replace_subformula_in_quantifier():
+    original = ForAll("x", Eq(Add(Var("x"), Zero()), Var("x")))
+    replaced = replace_subformula(original, Zero(), Succ(Zero()))
+    assert str(replaced) == "(forall x. ((x + S(0)) = x))"
+
+
+def test_match_template_with_multiplication():
+    template = ForAll("x", Eq(Mul(Var("x"), Var("A")), Var("B")))
+    formula = ForAll("y", Eq(Mul(Var("y"), Succ(Zero())), Zero()))
+    assert match_template(template, formula, ["A", "B"])
+
+
+def test_get_all_subformulae_complex():
+    formula = ForAll("x", 
+        Implies(
+            And(Eq(Var("x"), Zero()), Not(Eq(Var("x"), Succ(Zero())))),
+            Eq(Mul(Var("x"), Var("x")), Zero())
+        )
+    )
+    subformulae = list(get_all_subformulae(formula))
+    assert len(subformulae) == 14
+
+
+def test_hash_consistency():
+    x = Var("x")
+    y = Var("y")
+    formula1 = ForAll("x", Eq(x, y))
+    formula2 = ForAll("z", Eq(Var("z"), y))
+    assert hash(formula1) == hash(formula2)
+
+
+def test_canonicalize_with_free_vars():
+    formula = ForAll("x", 
+        And(
+            Eq(Var("x"), Var("free1")),
+            ForAll("y", Eq(Var("y"), Var("free2")))
+        )
+    )
+    free_vars = set()
+    canonicalized = canonicalize_bound_vars(formula, free_vars)
+    assert str(canonicalized) == "(forall $0. (($0 = free1) & (forall $1. ($1 = free2))))"
+    assert len(free_vars) == 2
