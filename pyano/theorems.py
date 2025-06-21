@@ -361,6 +361,79 @@ def prove_addition_is_commutative(b):
     b.flip_xy_order_in_forall()
 
 
+def prove_one_times_one_equals_one(b):
+    """Proves 1*1=1"""
+    p = b.p
+    v = get_cached_vars()
+
+    # 1*1 = 1*S(0) since 1 = S(0)
+    # By axiom x*S(y) = x*y + x: 1*S(0) = 1*0 + 1
+    # By axiom x*0 = 0: 1*0 = 0
+    # So 1*S(0) = 0 + 1
+    # By addition: 0 + S(0) = S(0 + 0) = S(0) = 1
+
+    # Start with multiplication by successor axiom: forall x,y. x*S(y) = x*y + x
+    # Instantiate with x=1, y=0: 1*S(0) = 1*0 + 1
+    b.immediately_implies(
+        b.peano_axiom_x_times_succ_y(),
+        forallx(Eq(Mul(v.i1, v.sx), Add(Mul(v.i1, v.x), v.i1))),
+    )
+    b.assert_proved("(forall x. ((S(0) * S(x)) = ((S(0) * x) + S(0))))")
+    
+    one_times_succ_zero = b.immediately_implies(
+        b.last_formula, Eq(Mul(v.i1, Succ(v.Z)), Add(Mul(v.i1, v.Z), v.i1))
+    )
+    b.assert_proved("((S(0) * S(0)) = ((S(0) * 0) + S(0)))")
+
+    # Use multiplication by zero axiom: forall x. x*0 = 0
+    # Instantiate with x=1: 1*0 = 0
+    one_times_zero = b.immediately_implies(
+        b.peano_axiom_x_times_zero(), Eq(Mul(v.i1, v.Z), v.Z)
+    )
+    b.assert_proved("((S(0) * 0) = 0)")
+
+    # Use transitivity to show 1*S(0) = 0 + 1
+    # We have: 1*S(0) = 1*0 + 1 and 1*0 = 0, so 1*S(0) = 0 + 1
+    mult_eq_zero_plus_one = b.immediately_implies(
+        one_times_zero, one_times_succ_zero, Eq(Mul(v.i1, Succ(v.Z)), Add(v.Z, v.i1))
+    )
+    b.assert_proved("((S(0) * S(0)) = (0 + S(0)))")
+
+    # Now show 0 + 1 = 1 using addition by successor: 0 + S(0) = S(0 + 0) = S(0)
+    # First use addition axiom: x + S(y) = S(x + y)
+    # Instantiate with x=0, y=0: 0 + S(0) = S(0 + 0)
+    b.immediately_implies(
+        b.peano_axiom_x_plus_succ_y(),
+        forallx(Eq(Add(v.Z, v.sx), Succ(Add(v.Z, v.x)))),
+    )
+    b.assert_proved("(forall x. ((0 + S(x)) = S((0 + x))))")
+    
+    zero_plus_succ_zero = b.immediately_implies(
+        b.last_formula, Eq(Add(v.Z, Succ(v.Z)), Succ(Add(v.Z, v.Z)))
+    )
+    b.assert_proved("((0 + S(0)) = S((0 + 0)))")
+
+    # Get 0 + 0 = 0 from addition by zero axiom
+    zero_plus_zero = b.immediately_implies(
+        b.peano_axiom_x_plus_zero(), Eq(Add(v.Z, v.Z), v.Z)
+    )
+    b.assert_proved("((0 + 0) = 0)")
+
+    # Use substitution to get: 0 + S(0) = S(0)
+    # We have: 0 + S(0) = S(0 + 0) and 0 + 0 = 0, so 0 + S(0) = S(0)
+    zero_plus_one_eq_one = b.immediately_implies(
+        zero_plus_zero, zero_plus_succ_zero, Eq(Add(v.Z, v.i1), v.i1)
+    )
+    b.assert_proved("((0 + S(0)) = S(0))")
+
+    # Finally: 1*S(0) = 0 + 1 = 1, and since 1 = S(0), we have 1*1 = 1
+    # We have: 1*S(0) = 0 + 1 and 0 + 1 = 1, so 1*S(0) = 1
+    b.immediately_implies(
+        zero_plus_one_eq_one, mult_eq_zero_plus_one, Eq(Mul(v.i1, v.i1), v.i1)
+    )
+    b.assert_proved("((S(0) * S(0)) = S(0))")
+
+
 def prove_one_less_than_or_eq_two(b):
     p = b.p
     v = get_cached_vars()
